@@ -26,7 +26,6 @@
     right: 0;
     bottom: 0;
     width: .4rem;
-
   }
 
   .item {
