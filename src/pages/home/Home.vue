@@ -1,11 +1,10 @@
 <template>
   <div>
-    <home-header ></home-header>
+    <home-header></home-header>
     <home-swiper :list="swiperList"></home-swiper>
     <home-icons :list="iconList"></home-icons>
     <home-recommed :list="recommendList"></home-recommed>
     <home-weekend :list="weekendList"></home-weekend>
-
   </div>
 </template>
 
@@ -16,6 +15,7 @@
   import HomeRecommed from './components/Recommed'
   import HomeWeekend from './components/Weekend'
   import axios from 'axios'
+  import {mapState} from "vuex"
 
   export default {
     name: 'Home',
@@ -26,9 +26,12 @@
       HomeRecommed,
       HomeWeekend
     },
-
+    computed: {
+      ...mapState(['city'])
+    },
     data() {
       return {
+        lastCity: '',
         swiperList: [],
         iconList: [],
         recommendList: [],
@@ -37,7 +40,7 @@
     },
     methods: {
       getHomeInfo() {
-        axios.get('/static/mock/index.json')
+        axios.get('/static/mock/index.json?city=' + this.city)
           .then((res) => {
             res = res.data
             if (res.ret) {
@@ -54,7 +57,15 @@
 
     /*一般请求数据在这个网络层*/
     mounted() {
+      this.lastCity = this.city
       this.getHomeInfo()
+    },
+    activated() {
+      if (this.lastCity !==  this.city) {
+        this.lastCity = this.city
+        this.getHomeInfo()
+      }
+
     }
   }
 </script>
